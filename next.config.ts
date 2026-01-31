@@ -10,9 +10,23 @@ const nextConfig: NextConfig = {
       {hostname:'img.clerk.com'}
     ]
   },
+  // Enable sourcemaps in development, disable in production
   productionBrowserSourceMaps: false,
-  // Empty turbopack config to silence the error and disable source maps
-  turbopack: {},
+  
+  // Configure Turbopack for better development experience
+  turbopack: {
+    resolveAlias: {
+      // Add any alias configurations if needed
+    }
+  },
+  
+  // Webpack configuration for better sourcemap handling
+  webpack: (config, { dev, isServer }) => {
+    if (dev) {
+      config.devtool = 'cheap-module-source-map';
+    }
+    return config;
+  },
 }
 
 export default withSentryConfig(nextConfig, {
@@ -20,7 +34,6 @@ export default withSentryConfig(nextConfig, {
   // https://www.npmjs.com/package/@sentry/webpack-plugin#options
 
   org: "ibm-wtp",
-
   project: "javascript-nextjs",
 
   // Only print logs for uploading source maps in CI
@@ -33,22 +46,9 @@ export default withSentryConfig(nextConfig, {
   widenClientFileUpload: true,
 
   // Uncomment to route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers.
-  // This can increase your server load as well as your hosting bill.
-  // Note: Check that the configured route will not match with your Next.js middleware, otherwise reporting of client-
-  // side errors will fail.
   // tunnelRoute: "/monitoring",
 
-  webpack: {
-    // Enables automatic instrumentation of Vercel Cron Monitors. (Does not yet work with App Router route handlers.)
-    // See the following for more information:
-    // https://docs.sentry.io/product/crons/
-    // https://vercel.com/docs/cron-jobs
-    automaticVercelMonitors: true,
-
-    // Tree-shaking options for reducing bundle size
-    treeshake: {
-      // Automatically tree-shake Sentry logger statements to reduce bundle size
-      removeDebugLogging: true,
-    },
-  },
+  // Sentry webpack plugin options
+  // Suppress sourcemap warnings in development
+  hideSourceMaps: process.env.NODE_ENV === 'development',
 });
