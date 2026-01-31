@@ -6,6 +6,9 @@ import { recentSessions } from "@/constants"
 import { getAllCompanions } from "@/lib/actions/companion.actions"
 import { getSubjectColor } from "@/lib/utils"
 
+// Force dynamic rendering to allow server-side data fetching
+export const dynamic = 'force-dynamic'
+
 const Page = async () => {
   const companions = await getAllCompanions({limit:5,page:1});
   const recentSessionsCompanions = await getAllCompanions({limit:5,page:1});

@@ -9,6 +9,10 @@ import { getUserCompanions, getUserSessions } from "@/lib/actions/companion.acti
 import { currentUser } from "@clerk/nextjs/server";
 import Image from "next/image";
 import { redirect } from "next/navigation";
+
+// Force dynamic rendering to allow server-side data fetching
+export const dynamic = 'force-dynamic'
+
 const MyJourney = async () => {
   const user= await currentUser();
   if(!user){
